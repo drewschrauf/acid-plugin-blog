@@ -19,6 +19,7 @@
   "dependencies": {
     "marked": "^0.3.5",
     "moment": "^2.12.0",
+    "slug": "^0.9.1",
     "yaml-front-matter": "^3.4.0"
   },
   "devDependencies": {

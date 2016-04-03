@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import yamlFront from 'yaml-front-matter';
 import moment from 'moment';
+import slug from 'slug';
 
 function promiseReaddir(dir) {
     return new Promise((resolve, reject) => {
@@ -57,9 +58,9 @@ export default function(options) {
 
             },
             resolveRoutes: () => {
-                return getPosts(postDir).then(routes => {
-                    return routes;
-                });
+                return getPosts(postDir).then(posts => posts.map(post => (
+                    `/${post.date.year()}/${post.date.month() + 1}/${post.date.day() - 1}/${slug(post.title)}`
+                )));
             },
             resolveTemplate: url => {
 

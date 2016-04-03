@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- '5'
+- '4'
+script: npm run ci
+before_deploy: npm run build
+deploy:
+  provider: npm
+  email: andrew.schrauf@gmail.com
+  api_key:
+    secure: MkZ5O0tKTPfbKEQtD7mwdOpLOPvHwyEGOdit1av4UxjRbphl/q+fx3WZVxnLtrf1VChZVOJbzd7UBAaHIrjtTDM+I6lbfWOPIsRTg88ej/H9QbC4ll9T0+4YsPZh0blHRWDT5mZuTjUTdxMW0wbA3dsPuAShP++P/JqkA9u2TEaenT2STBTBnNeoJS0wEKbNsaM1PePLjaL5o39a+S9WYqa76FDfMy0Qk+hxf0EGU41PKQznx17wkA9tL4bEDV9iQre3vdNfqLSla+74f7U1Hf1fwzCvNk8I/67VkRqur8nc1kmZ4wqlVaeLwUVVBpSSM5VT3Zv7H8qAEtkCiCgFUqub6Sf+CzsDilwjsOKTsNc4QYOH6f9Xg+Xuj2LUOi7r/hKJdMy4+IJ8g51K0gIMN/cqa9FueGVh/u6M+LLLg0+GrXavXLO2ADpjUgkiEOxSmSeHfhobrj2cJQXAszfDfjHWP4fPl3d3ROQ3Dn8o+AfwqHTl62/7vsEIbogxdim3DEfbaLtSzSVeyEHAQ2g2Gk9YZYj39RH05G7Qq8jJKUy87IsWstr1q8JqJFfNZHmxAIlxMNvkNM0hsVYc9zdrxMpd42C0vKBtmUjIK9DsNqT4ROvR2EWQ9aU82f0wE+bx3xbCyfNIJ5H9pBmgzzLNQU/HzHEHZC9EG9zGEy/oeOg=
+  on:
+    tags: true
+    repo: drewschrauf/acid-plugin-blog

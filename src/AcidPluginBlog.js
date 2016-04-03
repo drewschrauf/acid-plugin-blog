@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import yamlFront from 'yaml-front-matter';
+import moment from 'moment';
 
 function promiseReaddir(dir) {
     return new Promise((resolve, reject) => {
@@ -31,6 +32,9 @@ function getPosts(postDir) {
         }));
     }).then(posts => {
         return posts.map(post => yamlFront.loadFront(post));
+    }).then(posts => {
+        // parse dates
+        return posts.map(post => ({...post, date: moment(post.date, 'YYYY/MM/DD')}));
     });
 }
 

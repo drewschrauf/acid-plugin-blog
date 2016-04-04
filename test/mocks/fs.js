@@ -30,3 +30,12 @@ title: No Date
 ---
 No Date`
 });
+
+export const badDate = mock.fs({
+    '/posts/badDate.md':
+`---
+title: Bad Date
+date: testing
+---
+Bad Date`
+});

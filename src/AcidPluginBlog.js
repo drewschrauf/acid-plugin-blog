@@ -3,6 +3,7 @@ import fs from 'fs';
 import yamlFront from 'yaml-front-matter';
 import moment from 'moment';
 import slug from 'slug';
+import marked from 'marked';
 
 function pReaddir(dir) {
     return new Promise((resolve, reject) => {
@@ -34,14 +35,20 @@ function getPosts(postDir) {
     }).then(posts => {
         return posts.map(post => yamlFront.loadFront(post));
     }).then(posts => {
+        // parse out date and content
+        return posts.map(post => ({
+            ...post,
+            date: moment(post.date, 'YYYY/MM/DD'),
+            content: marked(post.__content)
+        }));
+    }).then(posts => {
         // check the format
         posts.forEach(post => {
             if (!post.title) throw new Error('Post must have a title: ' + JSON.stringify(post));
-            if (!post.date) throw new Error('Post must have a date: ' + JSON.stringify(post));
+            if (!post.date.isValid()) throw new Error('Post must have a date in the format YYYY/MM/DD: ' + JSON.stringify(post));
         });
 
-        // parse dates
-        return posts.map(post => ({...post, date: moment(post.date, 'YYYY/MM/DD')}));
+        return posts;
     });
 }
 

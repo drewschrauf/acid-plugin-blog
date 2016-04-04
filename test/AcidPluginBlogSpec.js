@@ -1,6 +1,6 @@
 import AcidPluginBlog, { __RewireAPI__ as ARewireAPI } from '../src/AcidPluginBlog';
 import chai, { expect } from 'chai';
-import { posts, missingTitle, missingDate } from './mocks/fs';
+import { posts, missingTitle, missingDate, badDate } from './mocks/fs';
 
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
@@ -75,6 +75,21 @@ describe('AcidPluginBlog', () => {
                 return expect(blog.resolver.resolveRoutes()).to.eventually.be.rejectedWith('must have a date');
             });
         });
+
+        describe('bad date', () => {
+            let blog;
+            beforeEach(() => {
+                ARewireAPI.__Rewire__('fs', badDate);
+                blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+            });
+            afterEach(() => {
+                ARewireAPI.__ResetDependency__('fs');
+            });
+
+            it('should fail to generate routes if a post has an unparseable date', () => {
+                return expect(blog.resolver.resolveRoutes()).to.eventually.be.rejectedWith('must have a date');
+            });
+        });
     });
 
     describe('#resolveContext', () => {
@@ -90,6 +105,7 @@ describe('AcidPluginBlog', () => {
         it('should return a context for an existing route', done => {
             blog.resolver.resolveContext('/2016/3/1/post-one').then(context => {
                 expect(context.title).to.equal('Post One');
+                expect(context.content).to.equal('<p>Post One</p>\n');
                 done();
             }).catch(done);
         });

@@ -38,9 +38,38 @@ describe('AcidPluginBlog', () => {
 
         it('should return a route for each post', done => {
             blog.resolver.resolveRoutes().then(routes => {
-                console.log(routes);
+                expect(routes).to.eql(['/2016/3/1/post-one', '/2016/3/2/post-two']);
                 done();
             }).catch(done);
+        });
+    });
+
+    describe('#resolveContext', () => {
+        let blog;
+        beforeEach(() => {
+            ARewireAPI.__Rewire__('fs', posts);
+            blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+        });
+        afterEach(() => {
+            ARewireAPI.__ResetDependency__('fs');
+        });
+
+        it('should return a context for an existing route', done => {
+            blog.resolver.resolveContext('/2016/3/1/post-one').then(context => {
+                expect(context.title).to.equal('Post One');
+                done();
+            }).catch(done);
+        });
+    });
+
+    describe('#resolveTemplate', () => {
+        let blog;
+        beforeEach(() => {
+            blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+        });
+
+        it('should return post.marko for a post', () => {
+            expect(blog.resolver.resolveTemplate('test')).to.equal('/templates/post.marko');
         });
     });
 });

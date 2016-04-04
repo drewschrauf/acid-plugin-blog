@@ -39,6 +39,23 @@ function getPosts(postDir) {
     });
 }
 
+function routeForPost(format, post) {
+    return format
+        .replace('{yyyy}', post.date.year())
+        .replace('{mm}', post.date.month() + 1)
+        .replace('{dd}', post.date.day() - 1)
+        .replace('{slug}', slug(post.title, {lower: true}));
+}
+
+function buildRoutesForPosts(postDir, format) {
+    return getPosts(postDir).then(posts => {
+        return posts.reduce((prev, curr) => ({
+            ...prev,
+            [routeForPost(format, curr)]: curr
+        }), {});
+    });
+}
+
 export default function(options) {
     options = options || {};
     if (!options.templateDir) {
@@ -50,20 +67,23 @@ export default function(options) {
 
     let templateDir = path.resolve(options.templateDir);
     let postDir = path.resolve(options.postDir);
+    let postUrlFormat = options.postUrlFormat || '/{yyyy}/{mm}/{dd}/{slug}';
 
     return {
         name: 'blog',
         resolver: {
             resolveContext: route => {
-
+                return buildRoutesForPosts(postDir, postUrlFormat).then(routes => {
+                    return routes[route];
+                });
             },
             resolveRoutes: () => {
-                return getPosts(postDir).then(posts => posts.map(post => (
-                    `/${post.date.year()}/${post.date.month() + 1}/${post.date.day() - 1}/${slug(post.title)}`
-                )));
+                return buildRoutesForPosts(postDir, postUrlFormat).then(routes => {
+                    return Object.keys(routes);
+                });
             },
             resolveTemplate: url => {
-
+                return path.join(templateDir, 'post.marko');
             }
         }
     };

@@ -4,7 +4,7 @@ import yamlFront from 'yaml-front-matter';
 import moment from 'moment';
 import slug from 'slug';
 
-function promiseReaddir(dir) {
+function pReaddir(dir) {
     return new Promise((resolve, reject) => {
         fs.readdir(dir, (err, files) => {
             if (err) {
@@ -15,7 +15,7 @@ function promiseReaddir(dir) {
     });
 }
 
-function promiseReadFile(path) {
+function pReadFile(path) {
     return new Promise((resolve, reject) => {
         fs.readFile(path, 'utf8', (err, content) => {
             if (err) {
@@ -27,13 +27,19 @@ function promiseReadFile(path) {
 }
 
 function getPosts(postDir) {
-    return promiseReaddir(postDir).then(files => {
+    return pReaddir(postDir).then(files => {
         return Promise.all(files.map(file =>{
-            return promiseReadFile(path.join(postDir, file));
+            return pReadFile(path.join(postDir, file));
         }));
     }).then(posts => {
         return posts.map(post => yamlFront.loadFront(post));
     }).then(posts => {
+        // check the format
+        posts.forEach(post => {
+            if (!post.title) throw new Error('Post must have a title: ' + JSON.stringify(post));
+            if (!post.date) throw new Error('Post must have a date: ' + JSON.stringify(post));
+        });
+
         // parse dates
         return posts.map(post => ({...post, date: moment(post.date, 'YYYY/MM/DD')}));
     });

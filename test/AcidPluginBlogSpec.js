@@ -1,6 +1,9 @@
 import AcidPluginBlog, { __RewireAPI__ as ARewireAPI } from '../src/AcidPluginBlog';
-import { expect } from 'chai';
-import { posts } from './mocks/fs';
+import chai, { expect } from 'chai';
+import { posts, missingTitle, missingDate } from './mocks/fs';
+
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
 
 const args = {templateDir: 'templates', postDir: 'posts'};
 
@@ -41,6 +44,36 @@ describe('AcidPluginBlog', () => {
                 expect(routes).to.eql(['/2016/3/1/post-one', '/2016/3/2/post-two']);
                 done();
             }).catch(done);
+        });
+
+        describe('no title', () => {
+            let blog;
+            beforeEach(() => {
+                ARewireAPI.__Rewire__('fs', missingTitle);
+                blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+            });
+            afterEach(() => {
+                ARewireAPI.__ResetDependency__('fs');
+            });
+
+            it('should fail to generate routes if a post is missing a title', () => {
+                return expect(blog.resolver.resolveRoutes()).to.eventually.be.rejectedWith('must have a title');
+            });
+        });
+
+        describe('no date', () => {
+            let blog;
+            beforeEach(() => {
+                ARewireAPI.__Rewire__('fs', missingDate);
+                blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+            });
+            afterEach(() => {
+                ARewireAPI.__ResetDependency__('fs');
+            });
+
+            it('should fail to generate routes if a post is missing a date', () => {
+                return expect(blog.resolver.resolveRoutes()).to.eventually.be.rejectedWith('must have a date');
+            });
         });
     });
 

@@ -14,3 +14,19 @@ date: 2016/03/02
 ---
 Post Two`
 });
+
+export const missingTitle = mock.fs({
+    '/posts/noTitle.md':
+`---
+date: 2016/03/01
+---
+No Title`
+});
+
+export const missingDate = mock.fs({
+    '/posts/noDate.md':
+`---
+title: No Date
+---
+No Date`
+});

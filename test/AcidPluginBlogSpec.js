@@ -39,11 +39,9 @@ describe('AcidPluginBlog', () => {
             ARewireAPI.__ResetDependency__('fs');
         });
 
-        it('should return a route for each post', done => {
-            blog.resolver.resolveRoutes().then(routes => {
-                expect(routes).to.eql(['/2016/3/1/post-one', '/2016/3/2/post-two']);
-                done();
-            }).catch(done);
+        it('should return a route for each post', () => {
+            return expect(blog.resolver.resolveRoutes())
+                .to.eventually.eql(['/2016/4/4/post-one', '/2016/3/3/post-two']);
         });
 
         describe('no title', () => {
@@ -103,7 +101,7 @@ describe('AcidPluginBlog', () => {
         });
 
         it('should return a context for an existing route', done => {
-            blog.resolver.resolveContext('/2016/3/1/post-one').then(context => {
+            blog.resolver.resolveContext('/2016/4/4/post-one').then(context => {
                 expect(context.title).to.equal('Post One');
                 expect(context.content).to.equal('<p>Post One</p>\n');
                 done();

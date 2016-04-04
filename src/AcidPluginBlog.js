@@ -56,7 +56,7 @@ function routeForPost(format, post) {
     return format
         .replace('{yyyy}', post.date.year())
         .replace('{mm}', post.date.month() + 1)
-        .replace('{dd}', post.date.day() - 1)
+        .replace('{dd}', post.date.date())
         .replace('{slug}', slug(post.title, {lower: true}));
 }
 

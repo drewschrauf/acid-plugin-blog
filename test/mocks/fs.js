@@ -4,13 +4,13 @@ export const posts = mock.fs({
     '/posts/one.md':
 `---
 title: Post One
-date: 2016/03/01
+date: 2016/04/04
 ---
 Post One`,
     '/posts/two.md':
 `---
 title: Post Two
-date: 2016/03/02
+date: 2016/03/03
 ---
 Post Two`
 });

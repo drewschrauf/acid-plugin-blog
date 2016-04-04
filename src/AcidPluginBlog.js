@@ -88,7 +88,7 @@ export default function(options) {
                     return Object.keys(routes);
                 });
             },
-            resolveTemplate: url => {
+            resolveTemplate: () => {
                 return path.join(templateDir, 'post.marko');
             }
         }

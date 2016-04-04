@@ -1,7 +1,7 @@
 {
   "name": "acid-plugin-blog",
-  "version": "0.1.1",
-  "description": "Markodwn blog plugin for Acid",
+  "version": "0.0.1",
+  "description": "Markdown blog plugin for Acid",
   "main": "index.js",
   "scripts": {
     "ci": "npm run lint && npm run test",

@@ -102,7 +102,7 @@ function buildRoutesForListings(postDir, pageSize, format) {
                 [route]: {
                     type: LISTING,
                     context: {
-                        page: pageNum,
+                        currentPage: pageNum,
                         totalPages,
                         posts: prev[route] ? [...prev[route].context.posts, curr] : [curr]
                     }

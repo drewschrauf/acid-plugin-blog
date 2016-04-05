@@ -48,7 +48,7 @@ describe('PostHelperSpec', () => {
             let item = routes['/page/2'];
             expect(item.type).to.equal('listing');
             expect(item.context.posts).to.have.length(2);
-            expect(item.context.page).to.equal(2);
+            expect(item.context.currentPage).to.equal(2);
             expect(item.context.totalPages).to.equal(2);
             expect(item.context.posts[0].date.month()).to.equal(1);
             expect(item.context.posts[1].date.month()).to.equal(0);

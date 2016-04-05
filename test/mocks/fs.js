@@ -10,7 +10,7 @@ Post One`,
     '/posts/two.md':
 `---
 title: Post Two
-date: 2016/03/03
+date: 2016/02/02
 ---
 Post Two`,
     '/posts/three.md':
@@ -22,7 +22,7 @@ Post Three`,
     '/posts/four.md':
 `---
 title: Post Four
-date: 2016/03/03
+date: 2016/01/01
 ---
 Post Four`
 });

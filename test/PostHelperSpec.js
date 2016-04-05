@@ -29,9 +29,9 @@ describe('PostHelperSpec', () => {
         it('should build routes for all posts and listing items', () => {
             expect(Object.keys(routes).length).to.equal(6);
             expect(routes['/2016/4/4/post-one']).to.not.be.undefined;
-            expect(routes['/2016/3/3/post-two']).to.not.be.undefined;
+            expect(routes['/2016/2/2/post-two']).to.not.be.undefined;
             expect(routes['/2016/3/3/post-three']).to.not.be.undefined;
-            expect(routes['/2016/3/3/post-four']).to.not.be.undefined;
+            expect(routes['/2016/1/1/post-four']).to.not.be.undefined;
             expect(routes['/page/1']).to.not.be.undefined;
             expect(routes['/page/2']).to.not.be.undefined;
         });
@@ -50,6 +50,8 @@ describe('PostHelperSpec', () => {
             expect(item.context.posts).to.have.length(2);
             expect(item.context.page).to.equal(2);
             expect(item.context.totalPages).to.equal(2);
+            expect(item.context.posts[0].date.month()).to.equal(1);
+            expect(item.context.posts[1].date.month()).to.equal(0);
         });
 
         describe('no title', () => {

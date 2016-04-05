@@ -57,7 +57,9 @@ function getPosts(postDir) {
             }
         });
 
-        return posts;
+        return posts.sort((a, b) => {
+            return b.date - a.date;
+        });
     });
 }
 

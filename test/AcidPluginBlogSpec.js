@@ -29,7 +29,7 @@ describe('AcidPluginBlog', () => {
         expect(blog.resolver.resolveTemplate).to.be.a('function');
     });
 
-    describe('#resolveRoutes', () => {
+    describe('resolver', () => {
         let blog;
         beforeEach(() => {
             ARewireAPI.__Rewire__('buildRoutes', () => Promise.resolve(routes));
@@ -39,38 +39,32 @@ describe('AcidPluginBlog', () => {
             ARewireAPI.__ResetDependency__('buildRoutes');
         });
 
-        it('should return a route for each post', () => {
-            return expect(blog.resolver.resolveRoutes())
-                .to.eventually.eql(['/one', '/two']);
-        });
-    });
-
-    describe('#resolveContext', () => {
-        let blog;
-        beforeEach(() => {
-            ARewireAPI.__Rewire__('buildRoutes', () => Promise.resolve(routes));
-            blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
-        });
-        afterEach(() => {
-            ARewireAPI.__ResetDependency__('buildRoutes');
+        describe('#resolveRoutes', () => {
+            it('should return a route for each post', () => {
+                return expect(blog.resolver.resolveRoutes())
+                    .to.eventually.eql(['/one', '/two', '/page/1']);
+            });
         });
 
-        it('should return a context for an existing route', done => {
-            blog.resolver.resolveContext('/one').then(context => {
-                expect(context).to.equal('one');
-                done();
-            }).catch(done);
-        });
-    });
-
-    describe('#resolveTemplate', () => {
-        let blog;
-        beforeEach(() => {
-            blog = new AcidPluginBlog({templateDir: '/templates', postDir: '/posts'});
+        describe('#resolveContext', () => {
+            it('should return a context for an existing route', done => {
+                blog.resolver.resolveContext('/one').then(context => {
+                    expect(context).to.equal('one');
+                    done();
+                }).catch(done);
+            });
         });
 
-        it('should return post.marko for a post', () => {
-            expect(blog.resolver.resolveTemplate('test')).to.equal('/templates/post.marko');
+        describe('#resolveTemplate', () => {
+            it('should return post.marko for a post', () => {
+                return expect(blog.resolver.resolveTemplate('/one'))
+                    .to.eventually.equal('/templates/post.marko');
+            });
+            it('should return listing.marko for a listing', () => {
+                return expect(blog.resolver.resolveTemplate('/page/1'))
+                    .to.eventually.equal('/templates/listing.marko');
+            });
         });
+
     });
 });

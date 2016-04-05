@@ -30,8 +30,11 @@ export default function(options = {}) {
                     Object.keys(routes)
                 ));
             },
-            resolveTemplate: () => {
-                return path.join(opts.templateDir, 'post.marko');
+            resolveTemplate: route => {
+                return buildRoutes(opts).then(routes => {
+                    let r = routes[route];
+                    return path.join(opts.templateDir, `${r.type}.marko`);
+                });
             }
         }
     };

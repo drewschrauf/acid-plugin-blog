@@ -88,14 +88,19 @@ function buildRoutesForPosts(postDir, format) {
 
 function buildRoutesForListings(postDir, pageSize, format) {
     return getPosts(postDir).then(posts => {
+        let totalPages = Math.ceil(posts.length / pageSize);
         return posts.reduce((prev, curr, index) => {
-            let pageNum = Math.floor(index / pageSize);
-            let route = routeForListing(format, pageNum + 1);
+            let pageNum = Math.floor(index / pageSize) + 1;
+            let route = routeForListing(format, pageNum);
             return {
                 ...prev,
                 [route]: {
                     type: LISTING,
-                    context: prev[route] ? [...prev[route].context, curr] : [curr]
+                    context: {
+                        page: pageNum,
+                        totalPages,
+                        posts: prev[route] ? [...prev[route].context, curr] : [curr]
+                    }
                 }
             };
         }, {});

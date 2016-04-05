@@ -80,7 +80,10 @@ function buildRoutesForPosts(postDir, format) {
             ...prev,
             [routeForPost(format, curr)]: {
                 type: POST,
-                context: curr
+                context: {
+                    ...curr,
+                    url: routeForPost(format, curr)
+                }
             }
         }), {})
     );
@@ -99,7 +102,7 @@ function buildRoutesForListings(postDir, pageSize, format) {
                     context: {
                         page: pageNum,
                         totalPages,
-                        posts: prev[route] ? [...prev[route].context, curr] : [curr]
+                        posts: prev[route] ? [...prev[route].context.posts, curr] : [curr]
                     }
                 }
             };

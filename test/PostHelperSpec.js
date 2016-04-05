@@ -15,23 +15,41 @@ const defaultArgs = {
 
 describe('PostHelperSpec', () => {
     describe('#buildRoutes', () => {
-        beforeEach(() => {
+        let routes;
+        beforeEach(done => {
             PHRewireAPI.__Rewire__('fs', posts);
+            buildRoutes(defaultArgs).then(r => {
+                routes = r;
+                done();
+            });
         });
         afterEach(() => {
             PHRewireAPI.__ResetDependency__('fs');
         });
-        it('should build routes for all posts and listing items', done => {
-            buildRoutes(defaultArgs).then(routes => {
-                expect(Object.keys(routes).length).to.equal(6);
-                expect(routes['/2016/4/4/post-one']).to.not.be.undefined;
-                expect(routes['/2016/3/3/post-two']).to.not.be.undefined;
-                expect(routes['/2016/3/3/post-three']).to.not.be.undefined;
-                expect(routes['/2016/3/3/post-four']).to.not.be.undefined;
-                expect(routes['/page/1']).to.not.be.undefined;
-                expect(routes['/page/2']).to.not.be.undefined;
-                done();
-            }).catch(done);
+        it('should build routes for all posts and listing items', () => {
+            expect(Object.keys(routes).length).to.equal(6);
+            expect(routes['/2016/4/4/post-one']).to.not.be.undefined;
+            expect(routes['/2016/3/3/post-two']).to.not.be.undefined;
+            expect(routes['/2016/3/3/post-three']).to.not.be.undefined;
+            expect(routes['/2016/3/3/post-four']).to.not.be.undefined;
+            expect(routes['/page/1']).to.not.be.undefined;
+            expect(routes['/page/2']).to.not.be.undefined;
+        });
+
+        it('should generate a post object for posts', () => {
+            let item = routes['/2016/4/4/post-one'];
+            expect(item.type).to.equal('post');
+            expect(item.context.title).to.equal('Post One');
+            expect(item.context.url).to.equal('/2016/4/4/post-one');
+            expect(item.context.content).to.equal('<p>Post One</p>\n');
+        });
+
+        it('should generate a listng object for listings', () => {
+            let item = routes['/page/2'];
+            expect(item.type).to.equal('listing');
+            expect(item.context.posts).to.have.length(2);
+            expect(item.context.page).to.equal(2);
+            expect(item.context.totalPages).to.equal(2);
         });
 
         describe('no title', () => {

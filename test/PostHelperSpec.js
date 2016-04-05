@@ -8,7 +8,9 @@ chai.use(chaiAsPromised);
 const defaultArgs = {
     templateDir: '/templates',
     postDir: '/posts',
-    postUrlFormat: '/{yyyy}/{mm}/{dd}/{slug}'
+    postUrlFormat: '/{yyyy}/{mm}/{dd}/{slug}',
+    listingUrlFormat: '/page/{idx}',
+    pageSize: 2
 };
 
 describe('PostHelperSpec', () => {
@@ -21,9 +23,13 @@ describe('PostHelperSpec', () => {
         });
         it('should build routes for all posts and listing items', done => {
             buildRoutes(defaultArgs).then(routes => {
-                expect(Object.keys(routes).length).to.equal(2);
+                expect(Object.keys(routes).length).to.equal(6);
                 expect(routes['/2016/4/4/post-one']).to.not.be.undefined;
                 expect(routes['/2016/3/3/post-two']).to.not.be.undefined;
+                expect(routes['/2016/3/3/post-three']).to.not.be.undefined;
+                expect(routes['/2016/3/3/post-four']).to.not.be.undefined;
+                expect(routes['/page/1']).to.not.be.undefined;
+                expect(routes['/page/2']).to.not.be.undefined;
                 done();
             }).catch(done);
         });

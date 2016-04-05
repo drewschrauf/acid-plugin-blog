@@ -12,7 +12,19 @@ Post One`,
 title: Post Two
 date: 2016/03/03
 ---
-Post Two`
+Post Two`,
+    '/posts/three.md':
+`---
+title: Post Three
+date: 2016/03/03
+---
+Post Three`,
+    '/posts/four.md':
+`---
+title: Post Four
+date: 2016/03/03
+---
+Post Four`
 });
 
 export const missingTitle = mock.fs({

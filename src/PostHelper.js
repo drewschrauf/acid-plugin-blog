@@ -69,6 +69,11 @@ function routeForPost(format, post) {
         .replace('{slug}', slug(post.title, {lower: true}));
 }
 
+function routeForListing(format, pageNumber) {
+    return format
+        .replace('{idx}', pageNumber);
+}
+
 function buildRoutesForPosts(postDir, format) {
     return getPosts(postDir).then(posts =>
         posts.reduce((prev, curr) => ({
@@ -83,15 +88,24 @@ function buildRoutesForPosts(postDir, format) {
 
 function buildRoutesForListings(postDir, pageSize, format) {
     return getPosts(postDir).then(posts => {
-        let pageCount = Math.ceil(posts.length / pageSize);
-        return {};
+        return posts.reduce((prev, curr, index) => {
+            let pageNum = Math.floor(index / pageSize);
+            let route = routeForListing(format, pageNum + 1);
+            return {
+                ...prev,
+                [route]: {
+                    type: LISTING,
+                    context: prev[route] ? [...prev[route].context, curr] : [curr]
+                }
+            };
+        }, {});
     });
 }
 
 export function buildRoutes(options) {
     return Promise.all([
         buildRoutesForPosts(options.postDir, options.postUrlFormat),
-        buildRoutesForListings(options.postDir, options.pageSize, options.format)
+        buildRoutesForListings(options.postDir, options.pageSize, options.listingUrlFormat)
     ]).then(routesArrays => {
         return {...routesArrays[0], ...routesArrays[1]};
     });

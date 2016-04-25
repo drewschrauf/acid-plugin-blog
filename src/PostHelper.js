@@ -30,7 +30,7 @@ function pReadFile(path) {
     });
 }
 
-function getPosts(postDir) {
+export function getPosts(postDir) {
     let fileArray;
     return pReaddir(postDir).then(files => {
         fileArray = files;
@@ -91,12 +91,13 @@ function buildRoutesForPosts(postDir, format) {
     );
 }
 
-function buildRoutesForListings(postDir, pageSize, format) {
+function buildRoutesForListings(postDir, pageSize, format, postFormat) {
     return getPosts(postDir).then(posts => {
         let totalPages = Math.ceil(posts.length / pageSize);
         return posts.reduce((prev, curr, index) => {
             let pageNum = Math.floor(index / pageSize) + 1;
             let route = routeForListing(format, pageNum);
+            let post = {...curr, url: routeForPost(postFormat, curr)};
             return {
                 ...prev,
                 [route]: {
@@ -104,7 +105,7 @@ function buildRoutesForListings(postDir, pageSize, format) {
                     context: {
                         currentPage: pageNum,
                         totalPages,
-                        posts: prev[route] ? [...prev[route].context.posts, curr] : [curr]
+                        posts: prev[route] ? [...prev[route].context.posts, post] : [post]
                     }
                 }
             };
@@ -115,7 +116,7 @@ function buildRoutesForListings(postDir, pageSize, format) {
 export function buildRoutes(options) {
     return Promise.all([
         buildRoutesForPosts(options.postDir, options.postUrlFormat),
-        buildRoutesForListings(options.postDir, options.pageSize, options.listingUrlFormat)
+        buildRoutesForListings(options.postDir, options.pageSize, options.listingUrlFormat, options.postUrlFormat)
     ]).then(routesArrays => {
         return {...routesArrays[0], ...routesArrays[1]};
     });

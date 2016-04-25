@@ -36,6 +36,8 @@ export default function(options = {}) {
                     return path.join(opts.templateDir, `${r.type}.marko`);
                 });
             }
-        }
+        },
+        options: opts,
+        watchExpressions: [new RegExp(`${opts.postDir}/.+.md`)]
     };
 }

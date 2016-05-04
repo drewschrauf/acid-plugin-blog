@@ -30,36 +30,32 @@ function pReadFile(path) {
     });
 }
 
-export function getPosts(postDir) {
-    let fileArray;
-    return pReaddir(postDir).then(files => {
-        fileArray = files;
-        return Promise.all(files.map(file =>{
-            return pReadFile(path.join(postDir, file));
-        }));
-    }).then(posts => {
-        return posts.map(post => yamlFront.loadFront(post));
-    }).then(posts => {
+export async function getPosts(postDir) {
+    const files = await pReaddir(postDir);
+    const postContents = await Promise.all(files.map(file =>{
+        return pReadFile(path.join(postDir, file));
+    }));
+    const posts = postContents.map(
+        post => yamlFront.loadFront(post)
+    ).map(post => ({
         // parse out date and content
-        return posts.map(post => ({
-            ...post,
-            date: moment(post.date, 'YYYY/MM/DD'),
-            content: marked(post.__content)
-        }));
-    }).then(posts => {
-        // check the format
-        posts.forEach((post, i) => {
-            if (!post.title) {
-                throw new Error(`Post must have a title: ${fileArray[i]}`);
-            }
-            if (!post.date.isValid()) {
-                throw new Error(`Post must have a date in the format YYYY/MM/DD: ${fileArray[i]}`);
-            }
-        });
+        ...post,
+        date: moment(post.date, 'YYYY/MM/DD'),
+        content: marked(post.__content)
+    }));
 
-        return posts.sort((a, b) => {
-            return b.date - a.date;
-        });
+    // check the format
+    posts.forEach((post, i) => {
+        if (!post.title) {
+            throw new Error(`Post must have a title: ${files[i]}`);
+        }
+        if (!post.date.isValid()) {
+            throw new Error(`Post must have a date in the format YYYY/MM/DD: ${files[i]}`);
+        }
+    });
+
+    return posts.sort((a, b) => {
+        return b.date - a.date;
     });
 }
 

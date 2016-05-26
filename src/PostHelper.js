@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import yamlFront from 'yaml-front-matter';
 import moment from 'moment';
-import slug from 'slug';
 import marked from 'marked';
 
 const POST = 'post';
@@ -64,7 +63,7 @@ function routeForPost(format, post) {
         .replace('{yyyy}', post.date.year())
         .replace('{mm}', post.date.month() + 1)
         .replace('{dd}', post.date.date())
-        .replace('{slug}', slug(post.title, {lower: true}));
+        .replace('{slug}', post.title.toLowerCase().replace(/[^\w\d]+/g, '-'));
 }
 
 function routeForListing(format, pageNumber) {

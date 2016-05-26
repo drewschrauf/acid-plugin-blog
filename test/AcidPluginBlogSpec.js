@@ -1,6 +1,7 @@
 import AcidPluginBlog, { __RewireAPI__ as ARewireAPI } from '../src/AcidPluginBlog';
 import chai, { expect } from 'chai';
 import routes from './mocks/routes';
+import path from 'path';
 
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
@@ -58,11 +59,11 @@ describe('AcidPluginBlog', () => {
         describe('#resolveTemplate', () => {
             it('should return post.marko for a post', () => {
                 return expect(blog.resolver.resolveTemplate('/one'))
-                    .to.eventually.equal('/templates/post.marko');
+                    .to.eventually.equal(path.resolve('/templates', 'post.marko'));
             });
             it('should return listing.marko for a listing', () => {
                 return expect(blog.resolver.resolveTemplate('/page/1'))
-                    .to.eventually.equal('/templates/listing.marko');
+                    .to.eventually.equal(path.resolve('/templates', 'listing.marko'));
             });
         });
 
